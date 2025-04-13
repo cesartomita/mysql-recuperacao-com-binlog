@@ -1,0 +1,3 @@
+.mysql_production
+.mysql_recovery
+binlogs_recovery
