@@ -137,9 +137,12 @@ No contêiner de recuperação, você pode aplicar os arquivos binlog para resta
 
 ### Scripts de restauração:
 
-SQL - Baseado em data e hora (`binlog_to_sql_datetime.sh`):
-SQL - Baseado em posição (`binlog_to_sql_position.sh`):
+SQL - Baseado em data e hora (`binlog_to_sql_datetime.sh`)
+
+SQL - Baseado em posição (`binlog_to_sql_position.sh`)
+
 BINLOG - Baseado em data e hora (`restore_using_binlog_datetime.sh`)
+
 BINLOG - Baseado em posição (`restore_using_binlog_position.sh`)
 
 Baseado em data e hora: Este método permite restaurar o banco até um momento específico no tempo.
