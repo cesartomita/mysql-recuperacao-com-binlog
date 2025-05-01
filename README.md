@@ -43,7 +43,7 @@ Verifique se os contêineres estão rodando com o comando:
 
 `docker ps`
 
-### Tabela de Contêineres
+### Tabela de contêineres
 
 <table>
   <thead>
