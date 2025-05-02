@@ -7,6 +7,16 @@ A simulação será feita com uso de contêineres Docker (em ambiente Windows), 
 - O banco original estará rodando com a imagem **mysql:8.0**.
 - A recuperação será feita em outro contêiner com a imagem **mysql:8.0-debian**.
 
+**Observação:**
+
+Para que a recuperação via binlog funcione, a mesma precisa estar ativada no ambiente. Use o comando abaixo para verificar:
+
+```
+SHOW VARIABLES LIKE 'log_bin';
+```
+
+![log_bin](./images/log_bin.png)
+
 ## Objetivos
 
 - Demonstrar como habilitar o binlog no MySQL.
@@ -111,25 +121,25 @@ No contêiner de recuperação, você pode aplicar os arquivos binlog para resta
 
 1. Convertendo os arquivos binlog para SQL.
 
-    Prós:
+    **Prós:**
 
     - Você pode revisar o conteúdo SQL antes de aplicar.
     - Fácil de auditar ou ajustar comandos manualmente.
     - Pode aplicar com --verbose --force e salvar logs de erro.
 
-    Contras:
+    **Contras:**
 
     - O processo pode ser mais lento, principalmente para binlogs grandes.
     - Pode falhar se o script SQL contiver comandos dependentes de tabelas não existentes.
 
 2. Restaruar diretamenteo do binlog.
 
-    Prós:
+    **Prós:**
 
     - Mais rápido, pois os comandos são enviados direto ao MySQL.
     - Menor uso de disco, pois não gera arquivos intermediários.
 
-    Contras:
+    **Contras:**
 
     - Menos controle sobre o que será aplicado.
     - Difícil auditar ou corrigir erros caso algo dê errado.
@@ -145,18 +155,18 @@ BINLOG - Baseado em data e hora (`restore_using_binlog_datetime.sh`)
 
 BINLOG - Baseado em posição (`restore_using_binlog_position.sh`)
 
-Baseado em data e hora: Este método permite restaurar o banco até um momento específico no tempo.
+**Baseado em data e hora**: Este método permite restaurar o banco até um momento específico no tempo.
 Útil para cenários onde você sabe exatamente quando ocorreu a falha ou alteração indesejada.
 
-Baseado em posição: Este método permite restaurar o banco até uma posição específica no arquivo binlog. Útil para cenários onde você deseja restaurar até um evento específico registrado no binlog.
+**Baseado em posição**: Este método permite restaurar o banco até uma posição específica no arquivo binlog. Útil para cenários onde você deseja restaurar até um evento específico registrado no binlog.
 
---start-position: Começa a leitura do binlog a partir de uma posição específica.
+**--start-position**: Começa a leitura do binlog a partir de uma posição específica.
 
---stop-position: Interrompe a leitura até uma posição específica.
+**--stop-position**: Interrompe a leitura até uma posição específica.
 
---start-datetime: Define quando o mysqlbinlog deve começar a ler o binlog. A leitura só começa nos eventos com timestamp igual ou superior à data/hora informada.
+**--start-datetime**: Define quando o mysqlbinlog deve começar a ler o binlog. A leitura só começa nos eventos com timestamp igual ou superior à data/hora informada.
 
---stop-datetime: Define quando parar de ler os eventos do binlog. A leitura para antes de eventos que tenham timestamp igual ou maior do que essa data/hora.
+**--stop-datetime**: Define quando parar de ler os eventos do binlog. A leitura para antes de eventos que tenham timestamp igual ou maior do que essa data/hora.
 
 ### Como identificar o ponto de recuperação?
 
@@ -184,7 +194,7 @@ COMMIT/*!*/;
 ```
 ### Como identificar a data/hora e a posição?
 
-Data e hora:
+**Data e hora:**
 
 A data e hora do evento estão indicadas no formato #YYYYMMDD HH:MM:SS.
 
@@ -192,7 +202,7 @@ A data e hora do evento estão indicadas no formato #YYYYMMDD HH:MM:SS.
 
 Isso corresponde a 2025-04-12 20:29:46.
 
-Posição:
+**Posição:**
 
 A posição do evento está indicada após # at.
 
@@ -208,18 +218,18 @@ Existem dois métodos para realizar a recuperação do banco de dados usando bin
 
 Este método converte os arquivos binlog em comandos SQL, que podem ser revisados e aplicados manualmente no banco de dados de recuperação.
 
-Passos:
+**Passos:**
 
 1. Execute o script `binlog_to_sql_datetime.sh` ou `binlog_to_sql_position.sh` para gerar o arquivo RESTORE.sql.
 
 2. Após gerar o arquivo RESTORE.sql, aplique-o no banco de dados de recuperação usando o script `restore_using_sql.sh`.
 
-Vantagens:
+**Vantagens:**
 
 - Permite revisar o conteúdo SQL antes de aplicar.
 - Fácil de auditar ou ajustar comandos manualmente.
 
-Desvantagens:
+**Desvantagens:**
 
 - O processo pode ser mais lento, especialmente para binlogs grandes.
 - Pode falhar se o script SQL contiver comandos dependentes de tabelas inexistentes.
@@ -228,16 +238,16 @@ Desvantagens:
 ### 2. Por BINLOG (Aplicação direta dos binlogs)
 Este método aplica os arquivos binlog diretamente no banco de dados de recuperação, sem convertê-los para SQL.
 
-Passos:
+**Passos:**
 
 1. Execute o script `restore_using_binlog_datetime.sh` ou `restore_using_binlog_position.sh` para aplicar os binlogs diretamente.
 
-Vantagens:
+**Vantagens:**
 
 - Mais rápido, pois os comandos são enviados diretamente ao MySQL.
 - Menor uso de disco, já que não gera arquivos intermediários.
 
-Desvantagens:
+**Desvantagens:**
 
 - Menos controle sobre o que será aplicado.
 - Difícil auditar ou corrigir erros caso algo dê errado.
@@ -251,13 +261,13 @@ Execute o script `select_tables_recovery.sh` para consultar as tabelas e verific
 
 ### Observações Importantes:
 
-Ambiente Real:
+**Ambiente Real:**
 
 Em um ambiente real, é essencial fazer backups dos dados recuperados antes de restaurá-los na base de produção.
 
 Certifique-se de testar o processo de recuperação em um ambiente de teste antes de aplicá-lo em produção.
 
-Logs e Depuração:
+**Logs e Debugs:**
 
 Se ocorrerem erros durante a recuperação, verifique os logs do MySQL no contêiner de recuperação:
 
